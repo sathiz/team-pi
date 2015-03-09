@@ -1,11 +1,7 @@
 var mysql  = require('mysql');
+var fs = require('fs');
 
-var connection = mysql.createConnection({
-    host     : '',
-	database : '',
-    user     : '',
-    password : ''
-});
+var connection = mysql.createConnection(require('./conn'));
 
 connection.connect(function(err) {
   if (err) {
@@ -17,7 +13,6 @@ connection.connect(function(err) {
 });
 
 var dateTime;
-var winner;
 
 getCurrentTime();
 
@@ -30,8 +25,8 @@ function getActionLog() {
 			return console.error('error connecting: ' + err.stack);
 
 		if (results.length > 0) {
-			winner = results;
-			setTimeout(doSomething, 30000);
+			fs.writeFileSync('/sys/class/gpio/gpio18/value', '1');
+			setTimeout(allDone, 10000);
 			dateTime = results[0].Created;
 			console.log(dateTime);
 		}
@@ -40,9 +35,9 @@ function getActionLog() {
 	});
 }
 
-function doSomething(){
+function allDone(){
 	console.log('** Doing something **');
-	console.log(winner);
+	fs.writeFileSync('/sys/class/gpio/gpio18/value', '0');
 	setTimeout(getActionLog, 1000);
 }
 
