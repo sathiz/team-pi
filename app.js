@@ -26,9 +26,11 @@ function getActionLog() {
 			return console.error('error connecting: ' + err.stack);
 
 		if (results.length > 0) {
+			fs.writeFileSync('/sys/class/gpio/gpio14/value', '1');
+			setTimeout(gongDone, 5000);
 			fs.writeFileSync('/sys/class/gpio/gpio18/value', '1');
 			exec('mpg123 -k 1000 -n 2200 "Kool & The Gang - Celebration.mp3"');
-			setTimeout(allDone, 30000);
+			setTimeout(lightsDone, 30000);
 			dateTime = results[0].Created;
 			console.log(dateTime);
 		}
@@ -37,10 +39,14 @@ function getActionLog() {
 	});
 }
 
-function allDone(){
+function lightsDone(){
 	console.log('** Doing something **');
 	fs.writeFileSync('/sys/class/gpio/gpio18/value', '0');
 	setTimeout(getActionLog, 1000);
+}
+
+function gongDone(){
+	fs.writeFileSync('/sys/class/gpio/gpio14/value', '0');
 }
 
 function getCurrentTime() {
