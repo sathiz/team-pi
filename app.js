@@ -1,5 +1,6 @@
 var mysql  = require('mysql');
 var fs = require('fs');
+var exec = require('child_process').exec;
 
 var connection = mysql.createConnection(require('./conn'));
 
@@ -26,7 +27,8 @@ function getActionLog() {
 
 		if (results.length > 0) {
 			fs.writeFileSync('/sys/class/gpio/gpio18/value', '1');
-			setTimeout(allDone, 10000);
+			exec('mpg123 -k 1000 -n 2200 "Kool & The Gang - Celebration.mp3"');
+			setTimeout(allDone, 30000);
 			dateTime = results[0].Created;
 			console.log(dateTime);
 		}
